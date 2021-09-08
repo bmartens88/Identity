@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +53,8 @@ namespace MvcClient.Controllers
             var _accessToken = new JwtSecurityTokenHandler().ReadToken(accessToken);
 
             var result = await GetSecret(accessToken);
+            
+            await RefreshAccessToken();
 
             return View();
         }
@@ -67,6 +70,31 @@ namespace MvcClient.Controllers
             var content = await response.Content.ReadAsStringAsync();
 
             return content;
+        }
+
+        private async Task RefreshAccessToken()
+        {
+            var serverClient = _httpClientFactory.CreateClient();
+            var discoveryDocument = await serverClient.GetDiscoveryDocumentAsync("https://localhost:5010");
+
+            var refreshToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
+            var refreshTokenClient = _httpClientFactory.CreateClient();
+
+            var tokenResponse = await refreshTokenClient.RequestRefreshTokenAsync(new RefreshTokenRequest
+            {
+                RefreshToken = refreshToken,
+                Address = discoveryDocument.TokenEndpoint,
+                ClientId = "client_id_mvc",
+                ClientSecret = "client_secret_mvc"
+            });
+
+            var authInfo = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            authInfo.Properties.UpdateTokenValue(OpenIdConnectParameterNames.AccessToken, tokenResponse.AccessToken);
+            authInfo.Properties.UpdateTokenValue(OpenIdConnectParameterNames.RefreshToken, tokenResponse.RefreshToken);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, authInfo.Principal,
+                authInfo.Properties);
         }
     }
 }

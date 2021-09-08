@@ -10,6 +10,7 @@ namespace ApiOne.Controllers
         [Authorize]
         public string Index()
         {
+            var claims = User.Claims;
             return "secret message from api one";
         }
     }

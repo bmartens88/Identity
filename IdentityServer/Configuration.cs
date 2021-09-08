@@ -64,6 +64,9 @@ namespace IdentityServer
                     // Normally you would access the user endpoint, but to save another roundtrip to the server, include
                     // claims in the ID Token
                     // AlwaysIncludeUserClaimsInIdToken = true,
+                    
+                    // To enable refresh tokens
+                    AllowOfflineAccess = true,
 
                     RequireConsent = false
                 }
