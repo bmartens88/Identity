@@ -1,5 +1,7 @@
-
+using System.Linq;
 using IdentityServer.Data;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +26,7 @@ namespace IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = _configuration.GetConnectionString("DefaultConnection");
-            
+
             services.AddDbContext<AppDbContext>(config => config.UseSqlite(connectionString));
 
             services.AddIdentity<IdentityUser, IdentityRole>(config =>
