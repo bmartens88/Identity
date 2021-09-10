@@ -43,6 +43,9 @@ namespace MvcClient
                     options.ResponseType = "code";
 
                     options.SignedOutCallbackPath = "/Home/Index";
+
+                    // Enabled by default
+                    // options.UsePkce = true;
                     
                     // Configure cookie claim mapping
                     options.ClaimActions.MapUniqueJsonKey("RawCoding.Grandma", "rc.grandma");

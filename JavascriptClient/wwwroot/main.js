@@ -2,7 +2,7 @@
     userStore: new Oidc.WebStorageStateStore({store: window.localStorage}),
     authority: "https://localhost:5010",
     client_id: "client_id_js",
-    response_type: "id_token token",
+    response_type: "code",
     post_logout_redirect_uri: "https://localhost:5004/Home/Index",
     redirect_uri: "https://localhost:5004/Home/SignIn",
     scope: "openid ApiOne ApiTwo rc.scope"

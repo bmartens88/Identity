@@ -1,11 +1,6 @@
-using System;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Policy;
 using IdentityServer.Data;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -74,8 +69,16 @@ namespace IdentityServer
                 // .AddInMemoryApiResources(Configuration.GetApis())
                 // .AddInMemoryClients(Configuration.GetClients())
                 // .AddInMemoryApiScopes(Configuration.GetScopes())
-                // .AddDeveloperSigningCredential();
-                .AddSigningCredential(certificate);
+                .AddDeveloperSigningCredential();
+            // .AddSigningCredential(certificate);
+
+            services.AddAuthentication()
+                .AddFacebook(config =>
+                {
+                    config.AppId = "fdfadfafafadasdfadf";      // Get from Facebook
+                    config.AppSecret = "adfasdfasdfasdfasdd";  // Get from Facebook
+                    // Valid redirect URI: <domain>:<port>/signin-facebook
+                });
 
             services.AddControllersWithViews();
         }
