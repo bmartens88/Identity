@@ -52,6 +52,8 @@ namespace IdentityServer
 
                     RedirectUris = {"https://localhost:5003/signin-oidc"},
 
+                    PostLogoutRedirectUris = {"https://localhost:5003/Home/Index"},
+
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
@@ -64,7 +66,7 @@ namespace IdentityServer
                     // Normally you would access the user endpoint, but to save another roundtrip to the server, include
                     // claims in the ID Token
                     // AlwaysIncludeUserClaimsInIdToken = true,
-                    
+
                     // To enable refresh tokens
                     AllowOfflineAccess = true,
 
@@ -73,13 +75,15 @@ namespace IdentityServer
                 new()
                 {
                     ClientId = "client_id_js",
-                    
+
                     AllowedGrantTypes = GrantTypes.Implicit,
-                    
+
                     RedirectUris = {"https://localhost:5004/Home/SignIn"},
-                    
-                    AllowedCorsOrigins = { "https://localhost:5004" },
-                    
+
+                    PostLogoutRedirectUris = {"https://localhost:5004/Home/Index"},
+
+                    AllowedCorsOrigins = {"https://localhost:5004"},
+
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
@@ -87,11 +91,11 @@ namespace IdentityServer
                         "ApiTwo",
                         "rc.scope"
                     },
-                    
+
                     AccessTokenLifetime = 1,
-                    
+
                     AllowAccessTokensViaBrowser = true,
-                    
+
                     RequireConsent = false
                 }
             };

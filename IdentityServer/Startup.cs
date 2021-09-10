@@ -1,4 +1,8 @@
+using System;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 using IdentityServer.Data;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
@@ -15,10 +19,12 @@ namespace IdentityServer
     public class Startup
     {
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             _configuration = configuration;
+            _environment = environment;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -43,9 +49,13 @@ namespace IdentityServer
             {
                 config.Cookie.Name = "IdentityServer.Cookie";
                 config.LoginPath = "/Auth/Login";
+                config.LogoutPath = "/Auth/Logout";
             });
 
             var assembly = typeof(Startup).Assembly.GetName().Name;
+
+            var filePath = Path.Combine(_environment.ContentRootPath, "is_cert.pfx");
+            var certificate = new X509Certificate2(filePath, "password");
 
             services
                 .AddIdentityServer()
@@ -64,7 +74,8 @@ namespace IdentityServer
                 // .AddInMemoryApiResources(Configuration.GetApis())
                 // .AddInMemoryClients(Configuration.GetClients())
                 // .AddInMemoryApiScopes(Configuration.GetScopes())
-                .AddDeveloperSigningCredential();
+                // .AddDeveloperSigningCredential();
+                .AddSigningCredential(certificate);
 
             services.AddControllersWithViews();
         }

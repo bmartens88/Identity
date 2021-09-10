@@ -3,6 +3,7 @@
     authority: "https://localhost:5010",
     client_id: "client_id_js",
     response_type: "id_token token",
+    post_logout_redirect_uri: "https://localhost:5004/Home/Index",
     redirect_uri: "https://localhost:5004/Home/SignIn",
     scope: "openid ApiOne ApiTwo rc.scope"
 }
@@ -19,6 +20,10 @@ userManager.getUser().then(user => {
         axios.defaults.headers.common["Authorization"] = "Bearer " + user.access_token;
     }
 });
+
+var signOut = function() {
+    userManager.signoutRedirect();
+}
 
 var callApi = function () {
     axios.get("https://localhost:5001/secret")
